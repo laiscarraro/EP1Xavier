@@ -1,0 +1,111 @@
+#include<stdio.h>
+#include<stdlib.h>
+#define true 1
+#define false 0
+#define N 12
+
+typedef struct s {
+	int chave;
+	struct s* prox;
+} NO;
+
+typedef struct {
+	NO* ADJ[N+1];
+	int cor[N+1];
+	int pai[N+1];
+	int descoberta[N+1];
+	int final[N+1];
+	int tempo;
+} LISTA;
+
+void inicializar(LISTA* l) {
+	for(int i = 1; i < N+1; i++) {
+		l->ADJ[i] = NULL;
+		l->cor[i] = 0;
+		l->pai[i] = -1;
+		l->descoberta[i] = -1;
+		l->final[i] = -1;
+	}
+	l->tempo = 0;
+}
+
+void adicionarAdj(LISTA* l, int v1, int v2) {
+	NO* primeiro = l->ADJ[v1];
+	while(primeiro && primeiro->prox) primeiro = primeiro->prox;
+	NO* novo = (NO*) malloc(sizeof(NO));
+	novo->prox = NULL;
+	novo->chave = v2;
+	if(primeiro) primeiro->prox = novo;
+	else l->ADJ[v1] = novo;
+}
+
+void imprimirAdj(LISTA* l) {
+	for(int i = 1; i < N+1; i++) {
+		NO* iterador = l->ADJ[i];
+		while(iterador) {
+			printf("%i ", iterador->chave);
+			iterador = iterador->prox;
+		}
+		printf("\n");
+	}
+}
+
+void visitar(LISTA* l, int u) {
+	l->cor[u] = 1;
+	l->tempo = l->tempo + 1;
+	l->descoberta[u] = l->tempo;
+	NO* adj = l->ADJ[u];
+	while(adj) {
+		if(l->cor[adj->chave] == 0) {
+			l->pai[adj->chave] = u;
+			printf(" Acabei de visitar %i e seu pai eh %i\n", adj->chave, u);
+			visitar(l, adj->chave);
+		}
+		adj = adj->prox;
+	}
+	l->cor[u] = 2;
+	l->final[u] = l->tempo + 1;
+}
+
+void DFS(LISTA* l) {
+	for(int i = 1; i < N+1; i++) {
+		if(l->cor[i] == 0) visitar(l, i);
+	}
+}
+
+int main() {
+	LISTA* l = (LISTA*) malloc(sizeof(LISTA));
+	adicionarAdj(l, 1, 2);
+	adicionarAdj(l, 1, 3);
+	adicionarAdj(l, 2, 1);
+	adicionarAdj(l, 2, 4);
+	adicionarAdj(l, 2, 5);
+	adicionarAdj(l, 3, 1);
+	adicionarAdj(l, 3, 5);
+	adicionarAdj(l, 4, 2);
+	adicionarAdj(l, 4, 6);
+	adicionarAdj(l, 4, 7);
+	adicionarAdj(l, 5, 2);
+	adicionarAdj(l, 5, 3);
+	adicionarAdj(l, 5, 6);
+	adicionarAdj(l, 6, 4);
+	adicionarAdj(l, 6, 5);
+	adicionarAdj(l, 7, 4);
+	adicionarAdj(l, 7, 8);
+	adicionarAdj(l, 7, 9);
+	adicionarAdj(l, 7, 12);
+	adicionarAdj(l, 8, 7);
+	adicionarAdj(l, 8, 9);
+	adicionarAdj(l, 9, 7);
+	adicionarAdj(l, 9, 8);
+	adicionarAdj(l, 9, 10);
+	adicionarAdj(l, 9, 11);
+	adicionarAdj(l, 10, 9);
+	adicionarAdj(l, 10, 11);
+	adicionarAdj(l, 10, 12);
+	adicionarAdj(l, 11, 9);
+	adicionarAdj(l, 11, 10);
+	adicionarAdj(l, 12, 7);
+	adicionarAdj(l, 12, 10);
+	DFS(l);
+}
