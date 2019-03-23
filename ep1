@@ -1,5 +1,6 @@
 #include<stdio.h>
 #include<stdlib.h>
+#include<stdbool.h>
 #define true 1
 #define false 0
 #define N 12
@@ -15,6 +16,7 @@ typedef struct {
 	int pai[N+1];
 	int descoberta[N+1];
 	int final[N+1];
+	int minor[N+1];
 	int tempo;
 } LISTA;
 
@@ -25,6 +27,7 @@ void inicializar(LISTA* l) {
 		l->pai[i] = -1;
 		l->descoberta[i] = -1;
 		l->final[i] = -1;
+		l->minor[i] = N;
 	}
 	l->tempo = 0;
 }
@@ -73,6 +76,67 @@ void DFS(LISTA* l) {
 	}
 }
 
+void DFS1(LISTA* l, int y) {
+	NO* adj = l->ADJ[y];
+	while(adj) {
+		if(l->cor[adj->chave] == 0) {
+			l->cor[adj->chave] = 1;
+			l->tempo = l->tempo + 1;
+			l->descoberta[adj->chave] = l->tempo;
+			l->minor[adj->chave] = l->tempo;
+			l->pai[adj->chave] = y;
+			DFS1(l, adj->chave);
+		}
+		adj = adj->prox;
+	}
+}
+
+void DFS2(LISTA* l, int z) {
+	NO* adj = l->ADJ[z];
+	while(adj) {
+		if(l->pai[adj->chave] == z) {
+			DFS2(l, adj->chave);
+		}
+		adj = adj->prox;
+	}
+	adj = l->ADJ[z];
+	while(adj) {
+		if((adj->chave != l->pai[z]) && (l->minor[adj->chave] < l->minor[z])) {
+			l->minor[z] = l->minor[adj->chave];
+		}
+		adj = adj->prox;
+	}
+}
+
+bool DFST(LISTA* l) {
+	bool biconexo = false;
+	for(int i = 1; i < N+1; i++) {
+		l->pai[i] = 0;
+		l->cor[i] = 0;
+		l->minor[i] = N;
+		l->descoberta[i] = 0;
+	}
+	l->tempo = 0;
+	l->cor[1] = 1;
+	l->tempo = l->tempo + 1;
+	l->descoberta[1] = l->tempo;
+	l->minor[1] = l->tempo;
+	DFS1(l, 1);
+	if(l->tempo == N) {
+		l->minor[1] = l->descoberta[1];
+		DFS2(l, 1);
+	}
+	biconexo = true;
+	for(int i = 1; i < N+1; i++) {
+		printf("o vertice %i tem descoberta %i e minor %i\n", i, l->descoberta[i], l->minor[i]);
+		if((i != 1) && (l->descoberta[i] == l->minor[i])) {
+			printf("vish maria, vdd, esse vertice ae desconecta as coisa td vei\n");
+			biconexo = false;
+		}
+	}
+	return biconexo;
+}
+
 int main() {
 	LISTA* l = (LISTA*) malloc(sizeof(LISTA));
 	adicionarAdj(l, 1, 2);
@@ -107,5 +171,6 @@ int main() {
 	adicionarAdj(l, 11, 10);
 	adicionarAdj(l, 12, 7);
 	adicionarAdj(l, 12, 10);
-	DFS(l);
+	if(DFST(l)) printf("ah eh biconexo sim\n");
+	else printf("ne nao\n");
 }
