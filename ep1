@@ -20,18 +20,6 @@ typedef struct {
 	int tempo;
 } LISTA;
 
-void inicializar(LISTA* l) {
-	for(int i = 1; i < N+1; i++) {
-		l->ADJ[i] = NULL;
-		l->cor[i] = 0;
-		l->pai[i] = -1;
-		l->descoberta[i] = -1;
-		l->final[i] = -1;
-		l->minor[i] = N;
-	}
-	l->tempo = 0;
-}
-
 void adicionarAdj(LISTA* l, int v1, int v2) {
 	NO* primeiro = l->ADJ[v1];
 	while(primeiro && primeiro->prox) primeiro = primeiro->prox;
@@ -40,40 +28,6 @@ void adicionarAdj(LISTA* l, int v1, int v2) {
 	novo->chave = v2;
 	if(primeiro) primeiro->prox = novo;
 	else l->ADJ[v1] = novo;
-}
-
-void imprimirAdj(LISTA* l) {
-	for(int i = 1; i < N+1; i++) {
-		NO* iterador = l->ADJ[i];
-		while(iterador) {
-			printf("%i ", iterador->chave);
-			iterador = iterador->prox;
-		}
-		printf("\n");
-	}
-}
-
-void visitar(LISTA* l, int u) {
-	l->cor[u] = 1;
-	l->tempo = l->tempo + 1;
-	l->descoberta[u] = l->tempo;
-	NO* adj = l->ADJ[u];
-	while(adj) {
-		if(l->cor[adj->chave] == 0) {
-			l->pai[adj->chave] = u;
-			printf(" Acabei de visitar %i e seu pai eh %i\n", adj->chave, u);
-			visitar(l, adj->chave);
-		}
-		adj = adj->prox;
-	}
-	l->cor[u] = 2;
-	l->final[u] = l->tempo + 1;
-}
-
-void DFS(LISTA* l) {
-	for(int i = 1; i < N+1; i++) {
-		if(l->cor[i] == 0) visitar(l, i);
-	}
 }
 
 void DFS1(LISTA* l, int y) {
@@ -130,7 +84,7 @@ bool DFST(LISTA* l) {
 	for(int i = 1; i < N+1; i++) {
 		printf("o vertice %i tem descoberta %i e minor %i\n", i, l->descoberta[i], l->minor[i]);
 		if((i != 1) && (l->descoberta[i] == l->minor[i])) {
-			printf("vish maria, vdd, esse vertice ae desconecta as coisa td vei\n");
+			printf("A aresta que liga os vértices %i e %i é uma aresta crítica.\n", l->pai[i], i);
 			biconexo = false;
 		}
 	}
@@ -171,6 +125,6 @@ int main() {
 	adicionarAdj(l, 11, 10);
 	adicionarAdj(l, 12, 7);
 	adicionarAdj(l, 12, 10);
-	if(DFST(l)) printf("ah eh biconexo sim\n");
-	else printf("ne nao\n");
+	if(DFST(l)) printf("O grafo é biconexo.\n");
+	else printf("O grafo não é biconexo.\n");
 }
