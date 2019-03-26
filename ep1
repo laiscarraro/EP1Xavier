@@ -1,9 +1,10 @@
+
 #include<stdio.h>
 #include<stdlib.h>
 #include<stdbool.h>
-#define true 1
-#define false 0
 #define N 12
+
+//Laís Carraro Leme Cavalheiro - nroUSP = 10687638
 
 typedef struct s {
 	int chave;
