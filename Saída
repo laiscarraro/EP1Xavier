@@ -1,0 +1,21 @@
+
+
+
+
+
+SAÍDA:
+
+o vertice 1 tem descoberta 1 e minor 1
+o vertice 2 tem descoberta 2 e minor 1
+o vertice 3 tem descoberta 6 e minor 1
+o vertice 4 tem descoberta 3 e minor 1
+o vertice 5 tem descoberta 5 e minor 1
+o vertice 6 tem descoberta 4 e minor 1
+o vertice 7 tem descoberta 7 e minor 7
+A aresta que liga os vértices 4 e 7 é uma aresta crítica.
+o vertice 8 tem descoberta 8 e minor 7
+o vertice 9 tem descoberta 9 e minor 7
+o vertice 10 tem descoberta 10 e minor 7
+o vertice 11 tem descoberta 11 e minor 9
+o vertice 12 tem descoberta 12 e minor 7
+O grafo não é biconexo.
